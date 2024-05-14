@@ -8,6 +8,7 @@ import com.devsuperior.dscatalog.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.dscatalog.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -58,12 +59,15 @@ public class ProductService {
             copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
             return new ProductDTO(entity);
-        } catch (ResourceNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found" + id);
         }
     }
 
     public void delete(Long id) {
+//        if (!repository.existsById(id)) {
+//            throw new IllegalArgumentException("Id not found " + id);
+//        }
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
